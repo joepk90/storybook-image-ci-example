@@ -1,0 +1,59 @@
+name: Storybook Regression Tests
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - main
+
+env:
+  STORYBOOK_PORT: 6006
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+      
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+      
+      # Run Storybook in the background
+      - name: Start Storybook
+        run: make storybook-screen-start
+        # env:
+        #   STORYBOOK_PORT: 6006
+      
+      # Wait for Storybook to fully start
+      # - name: Wait for Storybook to start
+      #   run: |
+      #     while ! curl --silent --fail http://localhost:6006; do
+      #       echo "Waiting for Storybook to start..."
+      #       sleep 5
+      #     done
+      #     echo "Storybook started successfully!"
+      
+      # Run the image tests using Loki
+      - name: Run image tests
+        run: make images-test
+        env:
+          LOKI_OUPTPUT_DIR: .loki
+          STORYBOOK_PORT: 6006
+      
+      # # Stop the Storybook background process
+      # - name: Stop Storybook
+      #   run: |
+      #     screen -S storybook-session -X quit
+      #     lsof -t -i:${STORYBOOK_PORT} | xargs kill -9
