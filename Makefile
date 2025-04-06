@@ -34,3 +34,6 @@ images-update:
 # generates the current and difference images and checks for differences between the images
 images-test:
 	npx loki test ${LOKI_ARGS} --debug
+
+image-test-ci:
+	npx loki test --requireReference --reactUri file:./storybook-static
