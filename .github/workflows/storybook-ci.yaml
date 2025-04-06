@@ -30,7 +30,7 @@ jobs:
       
       # Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm install && @rollup/rollup-linux-x64-gnu
       
       # Run Storybook in the background
       - name: Start Storybook
@@ -60,8 +60,8 @@ jobs:
       # - name: Run image tests
       #   run: make images-test
       #   env:
-      #     LOKI_OUPTPUT_DIR: .loki
-      #     STORYBOOK_PORT: 6006
+      #     STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
+      #     LOKI_OUPTPUT_DIR: ${{ secrets.LOKI_OUPTPUT_DIR }}
       
       # # Stop the Storybook background process
       # - name: Stop Storybook
