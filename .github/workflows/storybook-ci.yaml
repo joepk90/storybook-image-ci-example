@@ -36,13 +36,12 @@ jobs:
       - name: Start Storybook
         # run: make storybook-screen-start
         run: |
-          npm run storybook -- --host 0.0.0.0 &
+          npm run storybook &
           while ! curl --silent --fail http://localhost:6006; do
             echo "Waiting for Storybook to start..."
             sleep 5
           done
           echo "Storybook started successfully!"
-          make images-test
         env:
           STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
           LOKI_OUPTPUT_DIR: ${{ secrets.LOKI_OUPTPUT_DIR }}
@@ -57,11 +56,11 @@ jobs:
       #     echo "Storybook started successfully!"
       
       # Run the image tests using Loki
-      # - name: Run image tests
-      #   run: make images-test
-      #   env:
-      #     STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
-      #     LOKI_OUPTPUT_DIR: ${{ secrets.LOKI_OUPTPUT_DIR }}
+      - name: Run image tests
+        run: make images-test
+        env:
+          STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
+          LOKI_OUPTPUT_DIR: ${{ secrets.LOKI_OUPTPUT_DIR }}
       
       # # Stop the Storybook background process
       # - name: Stop Storybook
