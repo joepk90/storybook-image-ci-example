@@ -8,11 +8,6 @@ on:
     branches:
       - main
 
-env:
-  STORYBOOK_PORT: 6006
-  STORYBOOK_HOST: 0.0.0.0
-  LOKI_OUPTPUT_DIR: .loki
-
 jobs:
   test:
     name: Run Regression Tests
@@ -43,7 +38,3 @@ jobs:
 
       - name: Run image tests
         run: make image-test-ci
-        env:
-          STORYBOOK_HOST: ${{ secrets.STORYBOOK_HOST }}
-          STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
-          LOKI_OUPTPUT_DIR: ${{ secrets.LOKI_OUPTPUT_DIR }}

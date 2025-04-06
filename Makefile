@@ -1,12 +1,9 @@
 LOKI_OUPTPUT_DIR := .loki
-STORYBOOK_HOST := localhost
 STORYBOOK_PORT := 6006
 LOKI_ARGS= \
 	--reference=${LOKI_OUPTPUT_DIR}/reference \
  	--output=${LOKI_OUPTPUT_DIR}/current \
- 	--difference=${LOKI_OUPTPUT_DIR}/difference \
-	--host=$(STORYBOOK_HOST) \
-	--port=6006
+ 	--difference=${LOKI_OUPTPUT_DIR}/difference
 
 storybook-build:
 	npm run build-storybook
