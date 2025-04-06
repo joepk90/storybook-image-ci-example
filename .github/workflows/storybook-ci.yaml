@@ -69,7 +69,8 @@ jobs:
       
       # Run the image tests using Loki
       - name: Run image tests
-        run: make images-test
+        # run: make images-test
+        run: npm run visual-tests-ci
         env:
           STORYBOOK_HOST: ${{ secrets.STORYBOOK_HOST }}
           STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
