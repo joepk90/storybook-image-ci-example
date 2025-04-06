@@ -32,6 +32,6 @@ images-update:
 images-test:
 	npx loki test ${LOKI_ARGS}
 
-# ci uses the build version of storybook
+# ci uses the static build version of storybook, so we reference the file directly
 image-test-ci:
 	npx loki test --requireReference --reactUri file:./storybook-static
