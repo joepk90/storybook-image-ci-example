@@ -36,7 +36,7 @@ jobs:
       - name: Start Storybook
         # run: make storybook-screen-start
         run: |
-          make storybook-screen-start
+          npm run storybook -- --host 0.0.0.0 &
           while ! curl --silent --fail http://localhost:6006; do
             echo "Waiting for Storybook to start..."
             sleep 5
