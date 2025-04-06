@@ -1,0 +1,40 @@
+name: Storybook Regression Tests
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Regression Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+      
+      # Install dependencies
+      - name: Install dependencies
+        # TODO see if it's possible to use an image with rollup pre-installed or make it possible to not install it
+        run: npm install && npm install @rollup/rollup-linux-x64-gnu 
+
+      - name: Build Storybook
+        run: make storybook-build
+          
+      # there seems to be an issue with loki and running storybook locally: https://github.com/oblador/loki/issues/473
+      # instead run the tests against the static build build in the ci, following this example: https://alexgrischuk.medium.com/visual-regression-tests-for-storybook-with-loki-73638afd618
+      # in the image-test-ci make command we reference the static build file.
+
+      - name: Run image tests
+        run: make image-test-ci
