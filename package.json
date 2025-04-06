@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "visual-tests-ci": "npm run build-storybook && loki --requireReference --reactUri file:./storybook-static"
+    "visual-tests-ci": "npm run build-storybook && loki test --requireReference --reactUri file:./storybook-static"
   },
   "dependencies": {
     "react": "^17.0.2",
