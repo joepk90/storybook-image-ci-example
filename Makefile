@@ -3,9 +3,10 @@ STORYBOOK_PORT := 6006
 LOKI_ARGS= \
 	--reference=${LOKI_OUPTPUT_DIR}/reference \
  	--output=${LOKI_OUPTPUT_DIR}/current \
- 	--difference=${LOKI_OUPTPUT_DIR}/difference \
-	--host=localhost \
-	--port=6006
+ 	--difference=${LOKI_OUPTPUT_DIR}/difference
+
+storybook-build:
+	npm run build-storybook
 
 # storybook must be running in order for loki to work
 storybook-start:
@@ -27,3 +28,7 @@ images-update:
 # generates the current and difference images and checks for differences between the images
 images-test:
 	npx loki test ${LOKI_ARGS}
+
+# ci uses the static build version of storybook, so we reference the file directly
+image-test-ci:
+	npx loki test --requireReference --reactUri file:./storybook-static
