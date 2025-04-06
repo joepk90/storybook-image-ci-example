@@ -33,29 +33,29 @@ jobs:
       - name: Install dependencies
         run: npm install && npm install @rollup/rollup-linux-x64-gnu
 
-      - name: Build Storybook
-        run: make storybook-build
+      # - name: Build Storybook
+      #   run: make storybook-build
       
-      # Run Storybook in the background
-      - name: Start Storybook
-        # run: make storybook-screen-start
-        run: |
-          npm run storybook -- --host 0.0.0.0 --port 6006 &
-          while ! curl --silent --fail http://localhost:6006; do
-            echo "Waiting for Storybook to start..."
-            sleep 5
-          done
-          sleep 5
-          echo "Storybook started successfully!"
-        env:
-          STORYBOOK_HOST: ${{ secrets.STORYBOOK_HOST }}
-          STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
-          LOKI_OUPTPUT_DIR: ${{ secrets.LOKI_OUPTPUT_DIR }}
+      # # Run Storybook in the background
+      # - name: Start Storybook
+      #   # run: make storybook-screen-start
+      #   run: |
+      #     npm run storybook -- --host 0.0.0.0 --port 6006 &
+      #     while ! curl --silent --fail http://localhost:6006; do
+      #       echo "Waiting for Storybook to start..."
+      #       sleep 5
+      #     done
+      #     sleep 5
+      #     echo "Storybook started successfully!"
+      #   env:
+      #     STORYBOOK_HOST: ${{ secrets.STORYBOOK_HOST }}
+      #     STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
+      #     LOKI_OUPTPUT_DIR: ${{ secrets.LOKI_OUPTPUT_DIR }}
 
-      - name: Wait for Storybook to initialize
-        run: |
-          echo "Waiting for Storybook to be ready..."
-          sleep 30  # Increase if necessary to give Storybook more time to load
+      # - name: Wait for Storybook to initialize
+      #   run: |
+      #     echo "Waiting for Storybook to be ready..."
+      #     sleep 30  # Increase if necessary to give Storybook more time to load
           
       
       # Wait for Storybook to fully start
