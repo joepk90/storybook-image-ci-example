@@ -31,6 +31,9 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: npm install && npm install @rollup/rollup-linux-x64-gnu
+
+      - name: Build Storybook
+        run: make storybook-build
       
       # Run Storybook in the background
       - name: Start Storybook

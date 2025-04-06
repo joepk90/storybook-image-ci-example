@@ -7,6 +7,9 @@ LOKI_ARGS= \
 	--host=localhost \
 	--port=6006
 
+storybook-build:
+	npm run build-storybook
+
 # storybook must be running in order for loki to work
 storybook-start:
 	npm run storybook
