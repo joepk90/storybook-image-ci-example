@@ -1,6 +1,5 @@
-
-# change the LOKI_OUPTPUT_DIR variable to change the output directory of the images
 LOKI_OUPTPUT_DIR := .loki
+STORYBOOK_PORT := 6006
 LOKI_ARGS= \
 	--reference=${LOKI_OUPTPUT_DIR}/reference \
  	--output=${LOKI_OUPTPUT_DIR}/current \
@@ -9,6 +8,15 @@ LOKI_ARGS= \
 # storybook must be running in order for loki to work
 storybook-start:
 	npm run storybook
+
+# run stoybook in the background (on a seperate screen)
+storybook-screen-start:
+	screen -dmS storybook-session bash -c 'make storybook-start'
+
+# stop stoybook background process
+storybook-screen-stop:
+	screen -S storybook-session -X quit
+	lsof -t -i:${STORYBOOK_PORT} | xargs kill -9
 
 # generates the reference images
 images-update:
