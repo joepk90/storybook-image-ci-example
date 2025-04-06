@@ -10,6 +10,7 @@ on:
 
 env:
   STORYBOOK_PORT: 6006
+  STORYBOOK_HOST: 0.0.0.0
   LOKI_OUPTPUT_DIR: .loki
 
 jobs:
@@ -47,6 +48,7 @@ jobs:
           sleep 5
           echo "Storybook started successfully!"
         env:
+          STORYBOOK_HOST: ${{ secrets.STORYBOOK_HOST }}
           STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
           LOKI_OUPTPUT_DIR: ${{ secrets.LOKI_OUPTPUT_DIR }}
 
@@ -69,6 +71,7 @@ jobs:
       - name: Run image tests
         run: make images-test
         env:
+          STORYBOOK_HOST: ${{ secrets.STORYBOOK_HOST }}
           STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
           LOKI_OUPTPUT_DIR: ${{ secrets.LOKI_OUPTPUT_DIR }}
       
