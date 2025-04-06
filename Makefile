@@ -3,7 +3,9 @@ STORYBOOK_PORT := 6006
 LOKI_ARGS= \
 	--reference=${LOKI_OUPTPUT_DIR}/reference \
  	--output=${LOKI_OUPTPUT_DIR}/current \
- 	--difference=${LOKI_OUPTPUT_DIR}/difference
+ 	--difference=${LOKI_OUPTPUT_DIR}/difference \
+	--host=localhost \
+	--port=6006
 
 # storybook must be running in order for loki to work
 storybook-start:
