@@ -32,7 +32,7 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         # TODO see if it's possible to use an image with rollup pre-installed or make it possible to not install it
-        run: npm install && npm install @rollup/rollup-linux-x64-gnu 
+        run: npm install
 
       - name: Build Storybook
         run: make storybook-build
