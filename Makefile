@@ -11,6 +11,9 @@ LOKI_ARGS= \
 storybook-start:
 	npm run storybook
 
+storybook-start-ci:
+	npm run storybook
+
 # run stoybook in the background (on a seperate screen)
 storybook-screen-start:
 	screen -dmS storybook-session bash -c 'make storybook-start'
@@ -26,4 +29,4 @@ images-update:
 
 # generates the current and difference images and checks for differences between the images
 images-test:
-	npx loki test ${LOKI_ARGS}
+	npx loki test ${LOKI_ARGS} --debug

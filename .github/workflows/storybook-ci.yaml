@@ -36,11 +36,12 @@ jobs:
       - name: Start Storybook
         # run: make storybook-screen-start
         run: |
-          npm run storybook &
+          npm run storybook -- --host 0.0.0.0 --port 6006 &
           while ! curl --silent --fail http://localhost:6006; do
             echo "Waiting for Storybook to start..."
             sleep 5
           done
+          sleep 5
           echo "Storybook started successfully!"
         env:
           STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
