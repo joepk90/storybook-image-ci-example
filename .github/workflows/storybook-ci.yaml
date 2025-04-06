@@ -49,6 +49,12 @@ jobs:
         env:
           STORYBOOK_PORT: ${{ secrets.STORYBOOK_PORT }}
           LOKI_OUPTPUT_DIR: ${{ secrets.LOKI_OUPTPUT_DIR }}
+
+      - name: Wait for Storybook to initialize
+        run: |
+          echo "Waiting for Storybook to be ready..."
+          sleep 30  # Increase if necessary to give Storybook more time to load
+          
       
       # Wait for Storybook to fully start
       # - name: Wait for Storybook to start
