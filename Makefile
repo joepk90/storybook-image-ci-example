@@ -15,9 +15,6 @@ storybook-build:
 storybook-start:
 	npm run storybook
 
-storybook-start-ci:
-	npm run storybook
-
 # run stoybook in the background (on a seperate screen)
 storybook-screen-start:
 	screen -dmS storybook-session bash -c 'make storybook-start'
@@ -33,7 +30,8 @@ images-update:
 
 # generates the current and difference images and checks for differences between the images
 images-test:
-	npx loki test ${LOKI_ARGS} --debug
+	npx loki test ${LOKI_ARGS}
 
+# ci uses the build version of storybook
 image-test-ci:
 	npx loki test --requireReference --reactUri file:./storybook-static
