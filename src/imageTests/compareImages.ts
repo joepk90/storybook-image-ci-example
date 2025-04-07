@@ -11,6 +11,14 @@ import {
   VisualTestCase,
 } from "src/imageTests/common";
 
+export const generateImage = (imagePath: string): PNG => {
+  const jsonFile = readFileSync(imagePath);
+  console.log("", jsonFile);
+  const expectedImage = PNG.sync.read(jsonFile);
+  const { width, height } = expectedImage;
+  return new PNG({ width, height });
+};
+
 export const compareImages = async (testCase: VisualTestCase) => {
   const { parentDir, jsonFilename } = testCase;
 
