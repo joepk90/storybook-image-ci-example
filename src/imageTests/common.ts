@@ -1,6 +1,8 @@
 import { existsSync, mkdirSync, readdirSync, statSync } from "fs";
+import * as fs from "fs";
 import { packageDirectory } from "pkg-dir";
 import path from "path";
+import { PNG, PNGOptions } from "pngjs";
 
 export type VisualTestCase = {
   parentDir: string;
@@ -30,6 +32,66 @@ export const getAllTestCases = async () => {
   const projectRoot = await packageDirectory();
 
   return getAllTestCasesInDir(path.join(projectRoot as string, "imageTests"));
+};
+
+export const readJsonFile = (path: string) => {
+  if (!fs.existsSync(path)) {
+    console.warn(`JSON file not found at ${path}`);
+  }
+
+  return JSON.parse(fs.readFileSync(path, "utf-8"));
+};
+
+export const hexToRgb = (hex: string) => {
+  const result = /^#([0-9a-fA-F]{6})$/.exec(hex);
+  if (!result) {
+    throw new Error("Invalid HEX color");
+  }
+  const r = parseInt(result[1].substring(0, 2), 16);
+  const g = parseInt(result[1].substring(2, 4), 16);
+  const b = parseInt(result[1].substring(4, 6), 16);
+  return { r, g, b };
+};
+
+type ImageOptions = {
+  width: number;
+  height: number;
+  color: string;
+};
+
+export const populatePixels = (png: PNG, options: ImageOptions): PNG => {
+  const { width, height, color: hexColor } = options;
+  const { r, g, b } = hexToRgb(hexColor);
+
+  // Create a buffer for the image with all pixels set to the same color
+  const color = [r, g, b, 255]; // RGBA (fully opaque)
+  const pixelCount = width * height;
+  for (let i = 0; i < pixelCount; i++) {
+    const idx = i * 4;
+    png.data[idx] = color[0]; // Red channel
+    png.data[idx + 1] = color[1]; // Green channel
+    png.data[idx + 2] = color[2]; // Blue channel
+    png.data[idx + 3] = color[3]; // Alpha (fully opaque)
+  }
+
+  return png;
+};
+
+export const writeImageToFile = (png: PNG, path: string): void => {
+  // Write the image to a file
+  png.pack().pipe(fs.createWriteStream(path));
+};
+
+export const generateImageWithBackground = (options: ImageOptions): PNG => {
+  const { width, height } = options;
+
+  const png = new PNG({
+    width,
+    height,
+    filterType: -1,
+  });
+
+  return populatePixels(png, options);
 };
 
 // Recursively searches for json files in given directory (each json file represents one test case)
