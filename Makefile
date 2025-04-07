@@ -32,3 +32,12 @@ images-test:
 # ci uses the static build version of storybook, so we reference the file directly
 image-test-ci:
 	npx loki test --requireReference --reactUri file:./storybook-static
+
+
+# image regression tests
+
+images-regenerate:
+	npm run images-regenerate
+
+images-compare:
+	npm run images-compare
