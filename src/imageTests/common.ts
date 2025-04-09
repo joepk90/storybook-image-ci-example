@@ -4,6 +4,8 @@ import { packageDirectory } from "pkg-dir";
 import path from "path";
 import { PNG } from "pngjs";
 
+export const ACTUAL_DIR_NAME = "actual";
+export const REFERENCE_DIR_NAME = "reference";
 const IMAGE_TEST_DIR = ".imageTests";
 
 export type VisualTestCase = {
@@ -33,7 +35,12 @@ export const createDirIfNonExistent = (dir: string) => {
 export const getAllTestCases = async () => {
   const projectRoot = await packageDirectory();
 
-  return getAllTestCasesInDir(path.join(projectRoot as string, IMAGE_TEST_DIR));
+  // Optional subpath command line argument
+  const subpath = process.argv[2] || "";
+
+  return getAllTestCasesInDir(
+    path.join(projectRoot as string, IMAGE_TEST_DIR, subpath)
+  );
 };
 
 export const readJsonFile = (path: string) => {
@@ -79,9 +86,12 @@ export const populatePixels = (png: PNG, options: ImageOptions): PNG => {
   return png;
 };
 
-export const writeImageToFile = (png: PNG, path: string): void => {
-  // Write the image to a file
-  png.pack().pipe(fs.createWriteStream(path));
+export const writeImageToFile = async (png: PNG, path: string) => {
+  return await new Promise<void>((resolve, reject) => {
+    const stream = png.pack().pipe(fs.createWriteStream(path));
+    stream.on("finish", () => resolve());
+    stream.on("error", (err) => reject(err));
+  });
 };
 
 export const generateImageWithBackground = (options: ImageOptions): PNG => {

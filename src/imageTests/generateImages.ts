@@ -7,28 +7,32 @@ import {
   createDirIfNonExistent,
 } from "src/imageTests/common";
 
-const REFERENCE_DIR_NAME = "reference";
-
-const generateImages = async () => {
+/**
+ * generateImages Function:
+ *
+ * Generates images to a target directory within the .imageTests directory.
+ * @param outputDir
+ */
+export const generateImages = async (outputDir: string) => {
   const testCases = await getAllTestCases();
 
-  testCases.forEach((testCase) => {
-    const option = readJsonFile(testCase.path);
-    const png = generateImageWithBackground(option);
-    const pngName = testCase.jsonFilename.replace("json", "png");
+  console.log("GENERATING IMAGES STARTED");
+  return await Promise.all(
+    testCases.map(async (testCase) => {
+      console.log("GENERATING IMAGE: ", testCase.jsonFilename);
 
-    const referenceDirectory = path.join(
-      testCase.parentDir,
-      REFERENCE_DIR_NAME
-    );
+      const option = readJsonFile(testCase.path);
+      const png = generateImageWithBackground(option);
+      const pngName = testCase.jsonFilename.replace("json", "png");
 
-    // create directory if it doesn't exist
-    createDirIfNonExistent(referenceDirectory);
+      const outputDirectory = path.join(testCase.parentDir, outputDir);
 
-    // write file to directory
-    const referencePath = path.join(referenceDirectory, pngName);
-    writeImageToFile(png, referencePath);
-  });
+      // create directory if it doesn't exist
+      createDirIfNonExistent(outputDirectory);
+
+      // write file to directory
+      const referencePath = path.join(outputDirectory, pngName);
+      await writeImageToFile(png, referencePath);
+    })
+  );
 };
-
-generateImages();
