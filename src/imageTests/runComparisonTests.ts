@@ -5,7 +5,7 @@ import {
   VisualTestCase,
   CURRENT_DIR_NAME,
 } from "src/imageTests/common";
-import { compareTestCase } from "src/imageTests/compareImages";
+import { compareTestCases } from "src/imageTests/compareImages";
 import { generateImages } from "src/imageTests/generateImages";
 
 describe("Image Regression Tests", async () => {
@@ -15,7 +15,7 @@ describe("Image Regression Tests", async () => {
   console.log("=== COMPARING IMAGES ===");
   testCases.forEach(async (testCase: VisualTestCase) => {
     it(`Test PDF images for invoice: ${testCase.jsonFilename}`, async () => {
-      const success = await compareTestCase(testCase);
+      const success = await compareTestCases(testCase);
 
       assert.strictEqual(success, true);
     });

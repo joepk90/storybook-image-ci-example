@@ -1,5 +1,4 @@
-import { readdirSync, readFileSync, writeFileSync } from "fs";
-// import looksSame from "looks-same";
+import { readdirSync, readFileSync } from "fs";
 import path from "path";
 import pixelmatch from "pixelmatch";
 
@@ -13,11 +12,8 @@ import {
   createDirIfNonExistent,
   log,
   VisualTestCase,
+  writeImageToFile,
 } from "src/imageTests/common";
-
-const getReferenceImages = async (parentDir: string) => {
-  return await readdirSync(path.join(parentDir, REFERENCE_DIR_NAME));
-};
 
 const getImage = async (imagePath: string) => {
   const buffer = readFileSync(imagePath);
@@ -25,67 +21,119 @@ const getImage = async (imagePath: string) => {
   return pngImage;
 };
 
-export const compareTestCase = async (testCase: VisualTestCase) => {
+const getReferenceImages = async (parentDir: string) => {
+  return await readdirSync(path.join(parentDir, REFERENCE_DIR_NAME));
+};
+
+const saveDiffImage = async (
+  diffImage: PNG,
+  testCase: VisualTestCase,
+  refImageName: string
+) => {
   const { parentDir, jsonFilename } = testCase;
+
+  log(
+    `Image comparison failed: images for ${refImageName} of ${jsonFilename} are not equal\n`,
+    "error"
+  );
+
+  const diffImageOutputDir = path.join(parentDir, DIFF_DIR_NAME);
+  createDirIfNonExistent(diffImageOutputDir);
+
+  const diffImageOutputPath = path.join(
+    diffImageOutputDir,
+    `diff.${refImageName}`
+  );
+
+  log(
+    `Look at diff image stored in ${diffImageOutputPath} to see more detail\n`,
+    "info"
+  );
+
+  await writeImageToFile(diffImage, diffImageOutputPath);
+};
+
+const getImagePath = (
+  parentDir: string,
+  testDir: string,
+  imageName: string
+) => {
+  return path.join(parentDir, testDir, imageName);
+};
+
+const getReferenceImagePath = (parentDir: string, imageName: string) => {
+  return getImagePath(parentDir, REFERENCE_DIR_NAME, imageName);
+};
+
+const getCurrentImagePath = (parentDir: string, imageName: string) => {
+  return getImagePath(parentDir, CURRENT_DIR_NAME, imageName);
+};
+
+const getCurrentImage = async (parentDir: string, imageName: string) => {
+  const actualImagePath = await getCurrentImagePath(parentDir, imageName);
+  return await getImage(actualImagePath);
+};
+
+const getReferenceImage = async (parentDir: string, imageName: string) => {
+  const actualImagePath = await getReferenceImagePath(parentDir, imageName);
+  return await getImage(actualImagePath);
+};
+
+const compareImage = (expectedImage: PNG, actualImage: PNG) => {
+  const { width: expectedWidth, height: expectedHeight } = expectedImage;
+  const { width: actualWidth, height: actualHeight } = actualImage;
+
+  // create diff image for pixelmatch diff image output (otputs a new image with pixel differences)
+  const diffImage = new PNG({ width: actualWidth, height: actualHeight });
+
+  const diffOptions = {
+    threshold: 0,
+  };
+  const numDiffPixels = pixelmatch(
+    expectedImage.data,
+    actualImage.data,
+    diffImage.data,
+    expectedWidth,
+    expectedHeight,
+    diffOptions
+  );
+
+  return { numDiffPixels, diffImage };
+};
+
+export const compareTestCase = async (
+  testCase: VisualTestCase,
+  refImageName: string
+) => {
+  const { parentDir } = testCase;
+  const actualImage = await getCurrentImage(parentDir, refImageName);
+  const expectedImage = await getReferenceImage(parentDir, refImageName);
+
+  console.log("COMPARING IMAGE: ", refImageName);
+  const { numDiffPixels, diffImage } = compareImage(actualImage, expectedImage);
+
+  const imageAreEqual = numDiffPixels === 0;
+
+  if (!imageAreEqual) {
+    await saveDiffImage(diffImage, testCase, refImageName);
+  }
+
+  return imageAreEqual;
+};
+
+export const compareTestCases = async (testCase: VisualTestCase) => {
+  const { parentDir } = testCase;
 
   const referenceImagesNames = await getReferenceImages(parentDir);
 
   let allImagesAreEqual = true;
+  for (const refImageName of referenceImagesNames) {
+    const imageIsEqual = await compareTestCase(testCase, refImageName);
 
-  referenceImagesNames.forEach(async (refImageName) => {
-    const expectedImagePath = path.join(
-      parentDir,
-      REFERENCE_DIR_NAME,
-      refImageName
-    );
-
-    const actualImagePath = path.join(
-      parentDir,
-      CURRENT_DIR_NAME,
-      refImageName
-    );
-
-    const expectedImage = await getImage(expectedImagePath);
-    const actualImage = await getImage(actualImagePath);
-
-    const { width, height } = expectedImage;
-    const diffImage = new PNG({ width, height });
-
-    console.log("COMPARING IMAGE: ", refImageName);
-
-    const numDiffPixels = pixelmatch(
-      expectedImage.data,
-      actualImage.data,
-      diffImage.data,
-      width,
-      height
-    );
-
-    if (numDiffPixels !== 0) {
+    if (!imageIsEqual) {
       allImagesAreEqual = false;
-
-      log(
-        `Image comparison failed: images for ${refImageName} of ${jsonFilename} are not equal\n`,
-        "error"
-      );
-
-      const diffImageOutputDir = path.join(parentDir, DIFF_DIR_NAME);
-      createDirIfNonExistent(diffImageOutputDir);
-
-      const diffImageOutputPath = path.join(
-        diffImageOutputDir,
-        `diff.${refImageName}`
-      );
-
-      log(
-        `Look at diff image stored in ${diffImageOutputPath} to see more detail\n`,
-        "info"
-      );
-
-      const buffer = new Uint8Array(PNG.sync.write(diffImage));
-      await writeFileSync(diffImageOutputPath, buffer);
     }
-  });
+  }
 
   return allImagesAreEqual;
 };
