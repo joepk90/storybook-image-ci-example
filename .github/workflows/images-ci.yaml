@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: Run Regression Tests
+    name: Run Image Regression Tests
     runs-on: ubuntu-latest
     
     steps:
@@ -29,5 +29,5 @@ jobs:
         run: npm install
 
       # run image comparison tests
-      - name: Run image tests
+      - name: Run image regeression tests
         run: make images-compare

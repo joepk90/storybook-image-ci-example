@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: Run Regression Tests
+    name: Run Storybook Regression Tests
     runs-on: ubuntu-latest
     
     steps:
@@ -36,5 +36,5 @@ jobs:
       # instead run the tests against the static build build in the ci, following this example: https://alexgrischuk.medium.com/visual-regression-tests-for-storybook-with-loki-73638afd618
       # in the image-test-ci make command we reference the static build file.
 
-      - name: Run image tests
+      - name: Run Storybook tests
         run: make image-test-ci
