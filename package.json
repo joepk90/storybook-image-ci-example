@@ -11,7 +11,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "images-regenerate": "npx tsx ./src/imageTests/runImageRegeneration.ts",
-    "images-compare": "npx tsx ./src/imageTests/compareImages.ts"
+    "images-compare": "npx tsx ./src/imageTests/runComparisonTests.ts"
   },
   "dependencies": {
     "react": "^17.0.2",

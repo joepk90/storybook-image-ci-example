@@ -16,7 +16,7 @@ import {
 export const generateImages = async (outputDir: string) => {
   const testCases = await getAllTestCases();
 
-  console.log("GENERATING IMAGES STARTED");
+  console.log("=== GENERATING IMAGES ===");
   return await Promise.all(
     testCases.map(async (testCase) => {
       console.log("GENERATING IMAGE: ", testCase.jsonFilename);
