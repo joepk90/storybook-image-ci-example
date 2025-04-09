@@ -4,7 +4,7 @@ import { packageDirectory } from "pkg-dir";
 import path from "path";
 import { PNG } from "pngjs";
 
-export const ACTUAL_DIR_NAME = "actual";
+export const CURRENT_DIR_NAME = "current";
 export const REFERENCE_DIR_NAME = "reference";
 const IMAGE_TEST_DIR = ".imageTests";
 

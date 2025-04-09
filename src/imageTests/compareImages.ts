@@ -9,7 +9,7 @@ export const DIFF_DIR_NAME = "difference";
 
 import {
   REFERENCE_DIR_NAME,
-  ACTUAL_DIR_NAME,
+  CURRENT_DIR_NAME,
   createDirIfNonExistent,
   log,
   VisualTestCase,
@@ -39,7 +39,11 @@ export const compareTestCase = async (testCase: VisualTestCase) => {
       refImageName
     );
 
-    const actualImagePath = path.join(parentDir, ACTUAL_DIR_NAME, refImageName);
+    const actualImagePath = path.join(
+      parentDir,
+      CURRENT_DIR_NAME,
+      refImageName
+    );
 
     const expectedImage = await getImage(expectedImagePath);
     const actualImage = await getImage(actualImagePath);
