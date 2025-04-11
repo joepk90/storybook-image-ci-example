@@ -33,3 +33,10 @@ check the images generates in the `loki` output directory.
 If more specifity of loki image hiearchy is required, this can be confugured:
 https://loki.js.org/configuration.html#filenameformatter
 
+
+---
+
+### Image Regression Testing
+
+For Image Regression Testing see the following repository:
+[github.com/joepk90/image-regression-testing](https://github.com/joepk90/image-regression-testing)
